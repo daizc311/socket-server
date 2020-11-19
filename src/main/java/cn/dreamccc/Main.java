@@ -1,12 +1,17 @@
 package cn.dreamccc;
 
 import cn.dreamccc.handler.SimpleSocketHandler;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mysql.cj.jdbc.MysqlDataSourceFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -31,6 +36,32 @@ public class Main {
         String portStr = argMap.getOrDefault("p", "8080");
         int port = Integer.parseInt(portStr);
 
+        // 获取Mysql连接池
+        DataSource dataSource = connectMysqlConnectionPool();
+
+        // 开启Socket
+        openSocket(port);
+    }
+
+    private static DataSource connectMysqlConnectionPool() {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8";
+        String username = "root";
+        String password = "1234567890";
+
+
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setUrl(jdbcUrl);
+        druidDataSource.setUsername(username);
+        druidDataSource.setPassword(password);
+        druidDataSource.setMaxActive(10);
+        druidDataSource.setInitialSize(5);
+        druidDataSource.setMinIdle(3);
+        return druidDataSource;
+    }
+
+
+    private static void openSocket(int port) throws IOException {
+
         // 创建ServerSocket并与端口绑定
         ServerSocket serverSocket = new ServerSocket(port);
         log.info("LISTEN {}...", port);
@@ -52,7 +83,8 @@ public class Main {
     }
 
 
-    public static Map<String, String> args2Map(String[] args) {
+
+    private static Map<String, String> args2Map(String[] args) {
         return Arrays.stream(args)
                 .map(s -> s.split("="))
                 .filter(strings -> strings.length > 1)
