@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 
 @Slf4j
-public class SimpleSocketHandler implements SocketHandler {
-
+public class SimpleSocketHandler implements SocketHandler{
     final Socket socket;
     final String remoteAddressStr;
     final BufferedWriter writer;
@@ -23,7 +21,7 @@ public class SimpleSocketHandler implements SocketHandler {
         SocketChannel channel = socket.getChannel();
 
         // 尝试获取远端地址
-        if (channel!=null){
+        if (channel != null) {
             try {
                 tempStr = channel.getRemoteAddress().toString();
             } catch (Exception e) {
@@ -52,18 +50,14 @@ public class SimpleSocketHandler implements SocketHandler {
         // 循环接受消息
         while (socket.isConnected()) {
             try {
-                String s = reader.readLine();
-                if (s.equals("bye")) {
+                String msg = reader.readLine();
+                if (msg.equals("bye")) {
                     this.close();
                     break;
                 }
 
-                //TODO 业务逻辑
-                System.out.println(s);
-                writer.write("ok: " + s + "\n");
-                writer.flush();
-
-
+                // 业务逻辑
+                log.info("接收到消息=> {}", msg);
             } catch (Exception e) {
                 log.error(remoteAddressStr + ":循环接受消息出现异常", e);
                 close();

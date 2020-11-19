@@ -1,8 +1,7 @@
 package cn.dreamccc;
 
-import cn.dreamccc.handler.SimpleSocketHandler;
+import cn.dreamccc.handler.EchoSocketHandler;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.mysql.cj.jdbc.MysqlDataSourceFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,8 +9,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -70,7 +67,7 @@ public class Main {
                 // 接收到一个请求
                 Socket socket = serverSocket.accept();
                 // 启动一个线程处理这个请求
-                Thread thread = new Thread(() -> new SimpleSocketHandler(socket).handle());
+                Thread thread = new Thread(() -> new EchoSocketHandler(socket).handle());
                 thread.start();
                 if (serverSocket.isClosed()) {
                     break;
