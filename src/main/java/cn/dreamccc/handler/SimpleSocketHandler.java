@@ -12,7 +12,6 @@ public class SimpleSocketHandler implements SocketHandler {
 
     final Socket socket;
     final String remoteAddressStr;
-
     final BufferedWriter writer;
     final BufferedReader reader;
 
@@ -24,10 +23,12 @@ public class SimpleSocketHandler implements SocketHandler {
         SocketChannel channel = socket.getChannel();
 
         // 尝试获取远端地址
-        try {
-            tempStr = channel.getRemoteAddress().toString();
-        } catch (Exception e) {
-            log.error("获取远程地址失败", e);
+        if (channel!=null){
+            try {
+                tempStr = channel.getRemoteAddress().toString();
+            } catch (Exception e) {
+                log.error("获取远程地址失败", e);
+            }
         }
         remoteAddressStr = tempStr;
 
@@ -40,13 +41,13 @@ public class SimpleSocketHandler implements SocketHandler {
         }
         this.writer = tempWriter;
         this.reader = tempReader;
+
+        // 发送欢迎消息
+        this.helloMessage();
     }
 
     @Override
     public void handle() {
-
-        // 发送欢迎消息
-        this.helloMessage();
 
         // 循环接受消息
         while (socket.isConnected()) {
@@ -54,6 +55,7 @@ public class SimpleSocketHandler implements SocketHandler {
                 String s = reader.readLine();
                 if (s.equals("bye")) {
                     this.close();
+                    break;
                 }
 
                 //TODO 业务逻辑
@@ -62,7 +64,7 @@ public class SimpleSocketHandler implements SocketHandler {
                 writer.flush();
 
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error(remoteAddressStr + ":循环接受消息出现异常", e);
                 close();
                 return;
