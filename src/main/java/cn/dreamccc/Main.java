@@ -33,14 +33,17 @@ public class Main {
 
         // 创建ServerSocket并与端口绑定
         ServerSocket serverSocket = new ServerSocket(port);
-        log.info("Exit...");
-        while (!serverSocket.isClosed()) {
+        log.info("LISTEN {}...", port);
+        while (true) {
             try {
                 // 接收到一个请求
                 Socket socket = serverSocket.accept();
                 // 启动一个线程处理这个请求
                 Thread thread = new Thread(() -> new SimpleSocketHandler(socket).handle());
                 thread.start();
+                if (serverSocket.isClosed()) {
+                    break;
+                }
             } catch (IOException e) {
                 log.error("创建Socket发生异常:", e);
             }
@@ -49,7 +52,7 @@ public class Main {
     }
 
 
-    public static Map<String,String> args2Map(String[] args) {
+    public static Map<String, String> args2Map(String[] args) {
         return Arrays.stream(args)
                 .map(s -> s.split("="))
                 .filter(strings -> strings.length > 1)

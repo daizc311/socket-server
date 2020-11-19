@@ -8,4 +8,8 @@ import java.net.Socket;
 public interface SocketHandler {
 
     void handle();
+
+    void helloMessage();
+
+    void close();
 }
