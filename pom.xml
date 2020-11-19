@@ -30,11 +30,11 @@
             <version>1.7.30</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.4.4</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.hutool</groupId>-->
+<!--            <artifactId>hutool-all</artifactId>-->
+<!--            <version>5.4.4</version>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -73,10 +73,10 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <mainfest>
+                        <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>cn.dreamccc.Main</mainClass>
-                        </mainfest>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
